@@ -1,0 +1,42 @@
+﻿SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
+
+            Date past = simpleDateFormat.parse("string");
+            Date now = simpleDateFormat.parse("string");
+				past		now		if use adapter
+public void printDifference(Date startDate, Date endDate, ViewHolder viewHolder) {
+        viewHolder.tvTime.setText("");
+        //milliseconds
+        long different = endDate.getTime() - startDate.getTime();
+
+
+        long secondsInMilli = 1000;
+        long minutesInMilli = secondsInMilli * 60;
+        long hoursInMilli = minutesInMilli * 60;
+        long daysInMilli = hoursInMilli * 24;
+
+        long elapsedDays = different / daysInMilli;
+        different = different % daysInMilli;
+
+        long elapsedHours = different / hoursInMilli;
+        different = different % hoursInMilli;
+
+        long elapsedMinutes = different / minutesInMilli;
+        different = different % minutesInMilli;
+
+        long elapsedSeconds = different / secondsInMilli;
+
+        Log.d("thongbaoadapter",elapsedDays+":"+elapsedHours+":"+elapsedMinutes+":"+elapsedSeconds) ;
+
+        if(elapsedDays>0){
+            viewHolder.tvTime.setText(elapsedDays+" ngày ");
+        }
+        if(elapsedHours>0){
+            viewHolder.tvTime.setText(""+viewHolder.tvTime.getText() + elapsedHours + " giờ ");
+        }
+        if(elapsedMinutes>0){
+            viewHolder.tvTime.setText(""+viewHolder.tvTime.getText() + elapsedMinutes + " phút ");
+        }
+        if(elapsedSeconds>0){
+            viewHolder.tvTime.setText(""+viewHolder.tvTime.getText() + elapsedSeconds + " giây ");
+        }
+    }

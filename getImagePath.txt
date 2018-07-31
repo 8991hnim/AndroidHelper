@@ -1,0 +1,65 @@
+get 1 image path:
+Intent intent = new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, Key.PICK_IMAGE);
+
+if (requestCode == Key.PICK_IMAGE && resultCode == RESULT_OK && null != data) {
+            Uri selectedImage = data.getData();
+            imvRegionAvatar.setImageURI(selectedImage);
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+            Cursor cursor = getContentResolver().query(selectedImage,
+                    filePathColumn, null, null, null);
+            cursor.moveToFirst();
+
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            filePath = cursor.getString(columnIndex);
+            cursor.close();
+        }
+    }
+get many image paths:
+Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                //**These following line is the important one!
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), Key.SELECT_MULTI_PICTURES);
+                break;
+
+if (requestCode == Key.SELECT_MULTI_PICTURES) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (data.getClipData() != null) {
+                    int count = data.getClipData().getItemCount(); //evaluate the count before the for loop --- otherwise, the count is evaluated every loop.
+                    for (int i = 0; i < count; i++) {
+                        Uri imageUri = data.getClipData().getItemAt(i).getUri();
+                        Log.d("uri", "uri" + imageUri.toString());
+                        listImageUri.add(imageUri.toString());
+                        //do something with the image (save it to some directory or whatever you need to do with it here)
+
+                    }
+                    //get image path
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+                    for(int j=0; j<listImageUri.size();j++){
+                        Cursor cursor = getContentResolver().query(Uri.parse(listImageUri.get(j)),
+                                filePathColumn, null, null, null);
+                        cursor.moveToFirst();
+
+                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                        filePaths.add(cursor.getString(columnIndex));
+                        Log.d("do", "onActivityResult: " + filePaths.get(j));
+                        cursor.close();
+                    }
+} else if (data.getData() != null) {
+                    String imagePath = data.getData().getPath();
+                    //do something with the image (save it to some directory or whatever you need to do with it here)
+                }
+            }
+}
+
+//use for retrofit
+ArrayList<MultipartBody.Part> listImage = new ArrayList<>();
+        for(String filePath : filePaths){
+            File file = new File(filePath);
+            RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"),file);
+            MultipartBody.Part image = MultipartBody.Part.createFormData("images[]", file.getName(), reqFile);
+            listImage.add(image);
+        }

@@ -1,0 +1,67 @@
+﻿private void refreshTextView(TextView tvTimeStart, TextView tvTimeEnd, int which) {
+Calendar cal = Calendar.getInstance();        
+switch (which) {
+            case 0:
+                //hôm qua
+                cal.setTime(new Date());
+                cal.add(Calendar.DAY_OF_YEAR, -1);
+                tvTimeStart.setText(sdf.format(cal.getTime()));
+                tvTimeEnd.setText(sdf.format(cal.getTime()));
+                break;
+            case 1:
+                //hôm nay
+                cal.setTime(new Date());
+                tvTimeStart.setText(sdf.format(cal.getTime()));
+                tvTimeEnd.setText(sdf.format(cal.getTime()));
+                break;
+            case 2:
+                //tuần này
+                cal.setTime(new Date());
+                tvTimeEnd.setText(sdf.format(cal.getTime()));
+                cal.setFirstDayOfWeek(Calendar.MONDAY);
+                cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
+                tvTimeStart.setText(sdf.format(cal.getTime()));
+                break;
+            case 3:
+                //7 ngày trước
+                cal.setTime(new Date());
+                tvTimeEnd.setText(sdf.format(cal.getTime()));
+                cal.add(Calendar.DAY_OF_YEAR, -7);
+                tvTimeStart.setText(sdf.format(cal.getTime()));
+                break;
+            case 4:
+                //tuần trước
+                cal.setTime(new Date());
+                cal.setFirstDayOfWeek(Calendar.MONDAY);
+                cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
+                cal.add(Calendar.DAY_OF_WEEK, -1);
+                tvTimeEnd.setText(sdf.format(cal.getTime()));
+                cal.add(Calendar.DAY_OF_MONTH, -6);
+                tvTimeStart.setText(sdf.format(cal.getTime()));
+                break;
+            case 5:
+                //tháng này
+                cal.setTime(new Date());
+                tvTimeEnd.setText(sdf.format(cal.getTime()));
+                cal.set(Calendar.DAY_OF_MONTH, cal.getActualMinimum(Calendar.DAY_OF_MONTH));
+                tvTimeStart.setText(sdf.format(cal.getTime()));
+                break;
+            case 6:
+                //30 ngày trước
+                cal.setTime(new Date());
+                tvTimeEnd.setText(sdf.format(cal.getTime()));
+                cal.add(Calendar.DAY_OF_YEAR, -30);
+                tvTimeStart.setText(sdf.format(cal.getTime()));
+                break;
+            case 7:
+                //tháng trước
+                cal.setTime(new Date());
+                cal.set(Calendar.DAY_OF_MONTH, cal.getActualMinimum(Calendar.DAY_OF_MONTH));
+                cal.add(Calendar.DAY_OF_MONTH, -1);
+                tvTimeEnd.setText(sdf.format(cal.getTime()));
+                cal.set(Calendar.DAY_OF_MONTH, cal.getActualMinimum(Calendar.DAY_OF_MONTH));
+                tvTimeStart.setText(sdf.format(cal.getTime()));
+                break;
+
+        }
+    }

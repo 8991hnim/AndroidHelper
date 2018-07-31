@@ -1,0 +1,32 @@
+public static void showDataPickerDialog(Context context, final OnDateSetListener onDateSetListener){
+        final Calendar calendar = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                calendar.set(year,month,dayOfMonth);
+                onDateSetListener.onDateSet(calendar);
+            }
+        },calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DATE));
+        datePickerDialog.show();
+    }
+
+    public static void showTimePickerDialog(Context context, final OnTimeSetListener onTimeSetListener){
+        final Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        TimePickerDialog timePickerDialog = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                onTimeSetListener.onTimeSet(calendar);
+            }
+        },hour,minute,true);
+        timePickerDialog.show();
+    }
+
+ public interface  OnDateSetListener{
+        void onDateSet(Calendar c);
+    }
+
+    public interface OnTimeSetListener{
+        void onTimeSet(Calendar c);
+    }

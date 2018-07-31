@@ -1,0 +1,2 @@
+﻿gravity: căn với chính nó (căn text trong textview)
+layout_gravity: căn với layout bao quanh nó

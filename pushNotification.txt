@@ -1,0 +1,224 @@
+//tao client retrofit
+public class FCMRetrofitClient {
+
+    private static Retrofit retrofit = null;
+
+    public static Retrofit getClient(String baseUrl) {
+        if (retrofit == null) {
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(baseUrl)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(getOkHttpClient())
+                    .build();
+        }
+        return retrofit;
+    }
+
+//tao service api
+public interface FirebaseApiService {
+    @Headers(
+            {
+                    "Content-Type:application/json",
+                    "Authorization:key=AAAAMPIXFZM:APA91bFHdMz_U8bfVG9hELlp_p42qd8d8ievHENPHUM6skjbs8WYzANHYtcJQzIPn2R0WJhx92E5aY5l2hTeyYwo-WYW_gyS5mI-YqU0Xgj8pPmCSbbjOdt0bxlCxtbtSGDmVatZ70gPWf6pjP-sAc9_-J6pysPdeg"
+            }
+
+    )
+
+    @POST("fcm/send")
+    Call<Notify> sendNotify(@Body Notify notify);
+}
+Key lay tren project fb
+
+//tao class getRetrofit
+public class FCMApiUtils {
+    public static final String BASE_URL = "https://fcm.googleapis.com/";
+
+    public static FirebaseApiService getFCMCService() {
+        return FCMRetrofitClient.getClient(BASE_URL).create(FirebaseApiService.class);
+    }
+}
+
+//tao calss FirebaseIDService cap nhat token lien tuc 
+public class FirebaseIDService extends FirebaseInstanceIdService {
+    private static final String TAG = "FirebaseIDService";
+
+    @Override
+    public void onTokenRefresh() {
+        // Get updated InstanceID token.
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        Log.d(TAG, "Refreshed token: " + refreshedToken);
+
+        // TODO: Implement this method to send any registration to your app's servers.
+        sendRegistrationToServer(refreshedToken);
+    }
+
+    /**
+     * Persist token to third-party servers.
+     *
+     * Modify this method to associate the user's FCM InstanceID token with any server-side account
+     * maintained by your application.
+     *
+     * @param token The new token.
+     */
+    private void sendRegistrationToServer(String token) {
+        // Add custom implementation, as needed.
+    }
+}
+
+//tao class chua thong tin notify
+public class Notify {
+
+    @SerializedName("to")
+    @Expose
+    private String to;
+    @SerializedName("data")
+    @Expose
+    private NotifyDetail data;
+
+    public String getTo() {
+        return to;
+    }
+
+    public void setTo(String to) {
+        this.to = to;
+    }
+
+    public NotifyDetail getData() {
+        return data;
+    }
+
+    public void setData(NotifyDetail data) {
+        this.data = data;
+    }
+
+}
+
+public class NotifyDetail {
+
+    @SerializedName("title")
+    @Expose
+    private String title;
+    @SerializedName("message")
+    @Expose
+    private String message;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+}
+
+
+//tao class service thao tac chinh
+public class MyFirebaseMessagingService extends FirebaseMessagingService {
+    String TAG = "TokenMyFirebase";
+    private static final String NOTIFICATION_ID_EXTRA = "notificationId";
+    private static final String IMAGE_URL_EXTRA = "imageUrl";
+    private static final String ADMIN_CHANNEL_ID ="admin_channel";
+    @Override
+    public void onNewToken(String s) {
+        Log.d("Token", "Refreshed token: " + s);
+
+    }
+
+    @Override
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        Intent notificationIntent;
+        //khi click
+        if(LoginActivity.isAppRunning){
+            notificationIntent = new Intent(this, MainActivity.class);
+            Log.d(TAG,"me trong is app running");
+        }else{
+            notificationIntent = new Intent(this, ChonKhuVucActivity2.class);
+            Log.d(TAG,"me trong !is app running");
+        }
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        final PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent,
+                PendingIntent.FLAG_ONE_SHOT);
+
+
+        int notificationId = new Random().nextInt(60000);
+
+        //tao button
+        Intent testIntent = new Intent(this,LoginActivity.class);
+        PendingIntent likePendingIntent = PendingIntent.getActivity(this,1,testIntent,PendingIntent.FLAG_ONE_SHOT);
+
+        //tao notify
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
+                .setSmallIcon(R.drawable.icon_add)  //a resource for your custom small icon
+                .setContentTitle(remoteMessage.getData().get("title")) //the "title" value you sent in your notification
+                .setContentText(remoteMessage.getData().get("message")) //ditto
+                .setAutoCancel(true)  //dismisses the notification on click
+                .setSound(defaultSoundUri)
+                .setLargeIcon(getBitmap(R.drawable.icon_diamond))
+                .setContentIntent(pendingIntent)
+                .setStyle(new NotificationCompat.BigPictureStyle() //style
+                        .setSummaryText(remoteMessage.getData().get("message"))
+                        .bigPicture(getBitmap(R.drawable.icon_diamond))
+                        )
+
+//                .addAction(R.drawable.icon_search,"Search",likePendingIntent)
+//                .addAction(R.drawable.icon_search,"Search",likePendingIntent)
+                .addAction(R.drawable.icons8_conflict_50, "Previous", likePendingIntent) // #0
+                .addAction(R.drawable.icons8_conflict_50, "Pause", likePendingIntent)  // #1
+                .addAction(R.drawable.icons8_conflict_50, "Next", likePendingIntent);
+
+
+
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(notificationId /* ID of notification */, notificationBuilder.build());
+        Log.d(TAG,"FROM: " + remoteMessage.getFrom());
+
+    }
+
+    @Override
+    public void onMessageSent(String s) {
+        Log.d("Message","Success");
+        super.onMessageSent(s);
+    }
+
+
+    public Bitmap getBitmap(int res){
+        return BitmapFactory.decodeResource(getResources(),res);
+    }
+
+}
+
+//gui notification
+NotifyDetail notifyDetail = new NotifyDetail();
+        notifyDetail.setMessage("Test notify");
+        notifyDetail.setTitle("Day la title");
+        Notify notify = new Notify();
+        notify.setData(notifyDetail);
+	// truyen vao token FirebaseInstanceId.getInstace.getId()
+        notify.setTo("e0q1v69iAaE:APA91bH3gfehqIm05vvdQTih44wTyArKm00e4HeS2htNjkjnVYk9z7dmxnpeHT5PVsHsDNymUPAwotl6HH5RlaEYhHPS1EEFc_5VeMiCBiD8w5YkiOkCFQEA63uaMieqNVqGEEgn1Plu6LwTAiqg6tjD1v7eULJ_mA");
+        FCMApiUtils.getFCMCService().sendNotify(notify).enqueue(new Callback<Notify>() {
+            @Override
+            public void onResponse(Call<Notify> call, Response<Notify> response) {
+                Toast.makeText(ChonKhuVucActivity.this, "Success", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<Notify> call, Throwable t) {
+                Toast.makeText(ChonKhuVucActivity.this, "Fail", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+

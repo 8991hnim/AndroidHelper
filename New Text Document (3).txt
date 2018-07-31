@@ -1,0 +1,59 @@
+https://bitbucket.org
+https://itrogroup.bitrix24.com
+https://mail.zoho.com
+
+B1: lay base
+B2: tao activity (fragment) ke thua base activity (fragment) <truyen vao presenter> implements view
+B3: tao interface view ke thua base view <truyen vao presenter>
+B4: tao interface presenter ke thua base presenter
+B5: tao presenter imp ke thua base presenter imp<truyen vao view>  implements presenter
+
+//on click cho rcv
+B1: tao interface public interface OnItemClickListener{
+        void onClick(int position);
+
+        void onGoodClick(int position);
+
+        void onBadClick(int position);
+    }
+Tao bien toan cuc  OnItemClickListener onItemClickListener;
+B2: trong onBind:
+holder.btnGood.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemClickListener.onGoodClick(position);
+            }
+        });
+B3: Tao ham public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+B4: adapter.setOnItem... va lam binh thuong khi da lay dc vi tri position
+
+<android.support.v7.widget.Toolbar
+        android:id="@+id/myToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#f1eeee"
+        android:elevation="4dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/dp10"
+            android:gravity="center"
+            android:text="qlkv"
+            android:textColor="#e92222"
+            android:textSize="@dimen/sp18"
+            android:textStyle="bold" />
+    </android.support.v7.widget.Toolbar>
+
+setSupportActionBar((Toolbar) findViewById(R.id.myToolbar));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }

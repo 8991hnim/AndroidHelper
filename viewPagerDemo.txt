@@ -1,0 +1,60 @@
+public class BannerAdapter extends PagerAdapter {
+    Context context;
+    ArrayList<QuangCao> arrayBanners;
+
+    public BannerAdapter(Context context, ArrayList<QuangCao> arrayBanners) {
+        this.context = context;
+        this.arrayBanners = arrayBanners;
+    }
+
+    @Override
+    public int getCount() {
+        return arrayBanners.size();
+    }
+
+    @Override
+    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
+        return view == object;
+    }
+
+    @NonNull
+    @Override
+    public Object instantiateItem(@NonNull ViewGroup container, final int position) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.item_banner,null);
+
+        ImageView imvBgBanner = view.findViewById(R.id.imvBgBanner);
+        ImageView imvSongBanner = view.findViewById(R.id.imvSongBanner);
+        TextView tvTitleBanner = view.findViewById(R.id.tvTitleBanner);
+        TextView tvContentBanner = view.findViewById(R.id.tvContentBanner);
+
+        Picasso.with(context).load(arrayBanners.get(position).getHinhAnh()).into(imvBgBanner);
+        Picasso.with(context).load(arrayBanners.get(position).getHinhBaiHat()).into(imvSongBanner);
+        tvTitleBanner.setText(arrayBanners.get(position).getTenBaiHat());
+        tvContentBanner.setText(arrayBanners.get(position).getNoiDung());
+
+        //bat su kien khi click quang cao
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, DanhSachBaiHatActivity.class);
+                intent.putExtra("banner",arrayBanners.get(position));
+                context.startActivity(intent);
+            }
+        });
+
+        container.addView(view);
+
+        return view;
+    }
+
+    @Override
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+        container.removeView((View) object);
+    }
+}
+
+
+ viewPager.setAdapter(bannerAdapter);
+ circleIndicator.setViewPager(viewPager);
+ implementation 'me.relex:circleindicator:1.2.2@aar'
