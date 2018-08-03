@@ -1,0 +1,79 @@
+﻿//Tạo 1 menu
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/searchView"
+        app:actionViewClass="android.widget.SearchView"
+        android:title="Search View"
+        app:showAsAction="always"
+        android:icon="@drawable/icon_search"></item>
+</menu>
+
+//adapter : implements Filterable
+
+tạo 2 biến toàn cục : ArrayList<KhuVuc> listKhuVuc;
+    ArrayList<KhuVuc> listKhuVucFiltered;
+
+trong constructer cho listKhuVucFiltered = listKhuVuc;
+
+ @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String charString = charSequence.toString();
+                if (charString.isEmpty()) {
+                    listKhuVucFiltered = listKhuVuc;
+                } else {
+                    ArrayList<KhuVuc> filteredList = new ArrayList<>();
+                    for (KhuVuc kv : listKhuVuc) {
+                        // name match condition. this might differ depending on your requirement
+                        // here we are looking for name or phone number match
+                        if (kv.getName().toLowerCase().contains(charString.toLowerCase())) {
+                            filteredList.add(kv);
+                        }
+                    }
+
+                    listKhuVucFiltered = filteredList;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = listKhuVucFiltered;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                listKhuVucFiltered = (ArrayList<KhuVuc>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+@Override
+    public int getItemCount() {
+        return listKhuVucFiltered.size();
+    }
+
+
+//activity
+ public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_chon_kv,menu);
+        MenuItem item = menu.findItem(R.id.searchView);
+        SearchView searchView = (SearchView) item.getActionView();
+        searchView.setOnQueryTextListener(this);
+        searchView.setQueryHint("Tìm kiếm...");
+        searchView.setSubmitButtonEnabled(true);
+        return true;
+    }
+
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        chonKhuVucAdapter.getFilter().filter(query);
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        chonKhuVucAdapter.getFilter().filter(newText);
+        return false;
+    }

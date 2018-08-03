@@ -1,0 +1,89 @@
+public class MyFirebaseMessagingService extends FirebaseMessagingService {
+    String TAG = "TokenMyFirebase";
+    private static final String ADMIN_CHANNEL_ID = "admin_channel";
+    private static final int NOTIFICATION_ID = 100;
+
+    @Override
+    public void onNewToken(String s) {
+        Log.d("Token", "Refreshed token: " + s);
+
+    }
+
+    @Override
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        Intent i = new Intent(getApplication(), NotificationClickService.class);
+
+        i.putExtra(Key.ID, Integer.parseInt(remoteMessage.getData().get("id")));
+        i.putExtra(Key.TYPE, Integer.parseInt(remoteMessage.getData().get("type")));
+
+        Log.d("mfirebase", "id: " + remoteMessage.getData().get("id"));
+        Log.d("mfirebase", "type: " + remoteMessage.getData().get("type"));
+
+        PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), Key.NOTIFY, i, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(remoteMessage.getNotification().getTitle())
+                .setContentText(remoteMessage.getNotification().getBody())
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
+    }
+
+
+    @Override
+    public void onMessageSent(String s) {
+        Log.d("Message", "Success");
+        super.onMessageSent(s);
+    }
+}
+
+//service
+public class NotificationClickService extends Service {
+    private static final String TAG = "NotificationClick";
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d("mfirebase", "me on service");
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        int i = (int) intent.getExtras().get(Key.ID);
+        switch ((int) intent.getExtras().get(Key.TYPE)) {
+            case 1:
+                Intent intent2 = new Intent(getApplicationContext(), ThongBaoChiTietActivity.class);
+                intent2.putExtra(Key.ID, i);
+                PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 9, intent2, PendingIntent.FLAG_ONE_SHOT);
+                try {
+                    pendingIntent.send();
+                } catch (PendingIntent.CanceledException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case 2:
+                Intent intent3 = new Intent(getApplicationContext(),ChiTietYeuCauGiaHanActivity.class);
+                intent3.putExtra(Key.ID,i);
+                PendingIntent pendingIntent3 = PendingIntent.getActivity(getApplicationContext(),9,intent3,PendingIntent.FLAG_ONE_SHOT);
+                try {
+                    pendingIntent3.send();
+                } catch (PendingIntent.CanceledException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
+
+        return START_STICKY;
+    }
+}

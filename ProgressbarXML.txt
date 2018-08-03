@@ -1,0 +1,55 @@
+﻿implementation 'com.mikhaellopez:circularprogressbar:2.0.0'
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:paddingRight="5dp"
+    android:paddingLeft="5dp"
+    android:orientation="horizontal">
+
+    <com.mikhaellopez.circularprogressbar.CircularProgressBar
+        android:id="@+id/progressBar1"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_centerInParent="true"
+        app:cpb_background_progressbar_color="#cfcfcf"
+        app:cpb_background_progressbar_width="10dp"
+        app:cpb_progress="20"
+        app:cpb_progress_max="100"
+        app:cpb_progressbar_color="#f17807"
+        app:cpb_progressbar_width="10dp"
+        />
+
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="5"
+            android:textSize="20sp" />
+
+        <View
+            android:layout_width="60dp"
+            android:layout_height="1dp"
+            android:background="#f48c0e"></View>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:text="Đến hạn trong \n 1 tháng" />
+    </LinearLayout>
+
+</RelativeLayout>
+
