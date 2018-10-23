@@ -1,0 +1,54 @@
+ public static void writeFile(String data,Context context) {
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss dd-MM-yyyy");
+        String fileName = sdf.format(Calendar.getInstance().getTimeInMillis());
+        File path = context.getExternalFilesDir(null);
+        File file = new File(path, fileName+".txt");
+        FileOutputStream stream = null;
+        try {
+            stream = new FileOutputStream(file);
+            stream.write(data.getBytes());
+            Log.d("testt",fileName + path);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                stream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+//read
+    public static String readFromFile(Context context,String path) {
+        File file  = new File(path);
+
+        int length = (int) file.length();
+
+        byte[] bytes = new byte[length];
+
+        FileInputStream in=null;
+        try {
+            in = new FileInputStream(file);
+            in.read(bytes);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        String contents = new String(bytes);
+        return contents;
+    }
+
+
+//choose file github
+https://github.com/hedzr/android-file-chooser

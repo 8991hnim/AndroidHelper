@@ -1,0 +1,19 @@
+﻿private static Bundle bundleSave = new Bundle();
+
+@Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
+            rscNew.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, rscNew.getLayoutManager().onSaveInstanceState());
+   }
+
+Khi nào cần save state thì gọi onSaveInstanceState
+Khi nào cần get state cũ thì gọi onViewStateRestored

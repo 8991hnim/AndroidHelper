@@ -1,0 +1,17 @@
+public static void saveDataUser(Data data, Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(Key.APP_PREFERENCE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = preferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(data);
+        prefsEditor.putString(Key.DATA_USER, json);
+        prefsEditor.commit();
+    }
+
+    public static Data getDataUser(Context context) {
+
+        SharedPreferences preferences = context.getSharedPreferences(Key.APP_PREFERENCE, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = preferences.getString(Key.DATA_USER, "");
+        Data obj = gson.fromJson(json, Data.class);
+        return obj;
+    }

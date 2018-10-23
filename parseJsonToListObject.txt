@@ -1,0 +1,4 @@
+ JSONObject jsonObject = new JSONObject(json);
+
+JSONArray jsonArrayUser = jsonObject.getJSONArray("User");
+            List<User> userList = new Gson().fromJson(String.valueOf(jsonArrayUser),  new TypeToken<ArrayList<User>>(){}.getType());

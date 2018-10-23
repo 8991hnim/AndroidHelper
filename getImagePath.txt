@@ -60,6 +60,6 @@ ArrayList<MultipartBody.Part> listImage = new ArrayList<>();
         for(String filePath : filePaths){
             File file = new File(filePath);
             RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"),file);
-            MultipartBody.Part image = MultipartBody.Part.createFormData("images[]", file.getName(), reqFile);
+            MultipartBody.Part image = MultipartBody.Part.createFormData("images[](name trên sv)", file.getName(), reqFile);
             listImage.add(image);
         }

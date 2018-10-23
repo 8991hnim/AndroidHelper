@@ -1,0 +1,84 @@
+﻿ <FrameLayout
+                    android:layout_marginLeft="-7dp"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp">
+
+                    <include layout="@layout/custom_layout"
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
+                        android:layout_gravity="center"/>
+
+                    <ProgressBar
+                        android:rotation="180"
+                        android:id="@+id/progressBar1"
+                        android:layout_width="110dp"
+                        android:layout_height="110dp"
+                        android:indeterminate="false"
+                        android:progressDrawable="@drawable/circle_progress_bar"
+                        android:background="@drawable/circle_shape"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:max="100"
+                        android:progress="10" />
+
+                </FrameLayout>
+
+
+//custom_layout
+<LinearLayout
+    android:orientation="vertical"
+    android:gravity="center"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="90dp"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:textSize="29sp"
+        android:text="5"
+        android:layout_marginBottom="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:background="@color/text_title"
+        android:layout_width="60dp"
+        android:layout_height="1dp" />
+
+    <TextView
+        android:textSize="12sp"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="Đến hạn trong 1  Tháng"
+        android:textAlignment="center" />
+
+</LinearLayout>
+
+//circle_progress_bar
+<rotate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fromDegrees="270"
+    android:toDegrees="270">
+    <shape
+        android:innerRadiusRatio="2.5"
+        android:shape="ring"
+        android:thickness="5dp"
+        android:useLevel="true"><!-- this line fixes the issue for lollipop api 21 -->
+
+        <gradient
+            android:angle="0"
+            android:endColor="@color/text_title"
+            android:startColor="@color/text_title"
+            android:type="sweep"
+            android:useLevel="false" />
+    </shape>
+</rotate>
+
+//circle_shape
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="ring"
+    android:innerRadiusRatio="2.5"
+    android:thickness="5dp"
+    android:useLevel="false">
+
+    <solid android:color="#CCC" />
+
+</shape> 
